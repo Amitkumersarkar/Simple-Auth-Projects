@@ -1,7 +1,11 @@
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import auth from "../Firebase.init";
+import { useState } from "react";
 
 const Register = () => {
+
+    const [errorMessage, setErrorMessage] = useState('');
+
     const handleRegister = (e) => {
         e.preventDefault();
         // console.log(e.target.email.value);
@@ -10,6 +14,8 @@ const Register = () => {
         const password = e.target.password.value;
         console.log(name, email, password);
 
+        // reset error and status
+        setErrorMessage('');
         // create user with email and password
 
         createUserWithEmailAndPassword(auth, email, password)
@@ -17,7 +23,8 @@ const Register = () => {
                 console.log(result.user);
             })
             .catch(error => {
-                console.log('ERROR', error);
+                console.log('ERROR', error.message);
+                setErrorMessage(errorMessage.message)
             })
 
     }
@@ -67,7 +74,10 @@ const Register = () => {
                         Register
                     </button>
                 </form>
+                {
+                    errorMessage && <p className="text-rose-500">{errorMessage}</p>
 
+                }
                 <p className="text-sm text-center text-gray-600 mt-4">
                     Already have an account?{" "}
                     <a href="/login" className="text-purple-600 font-medium hover:underline">
