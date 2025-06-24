@@ -4,6 +4,7 @@ import { useState } from "react";
 
 const Register = () => {
 
+    const [success, setSuccess] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
     const handleRegister = (e) => {
@@ -16,21 +17,27 @@ const Register = () => {
 
         // reset error and status
         setErrorMessage('');
+        setSuccess(false);
         // create user with email and password
-
+        if (password.length < 6) {
+            setErrorMessage('password should be 6 character or longer');
+            return;
+        }
         createUserWithEmailAndPassword(auth, email, password)
             .then(result => {
                 console.log(result.user);
+                setSuccess(true);
             })
             .catch(error => {
                 console.log('ERROR', error.message);
                 setErrorMessage(errorMessage.message)
+                setSuccess(false);
             })
 
     }
     return (
         <div className="bg-dark flex items-center justify-center min-h-screen">
-            <div className="bg-blue-400 p-6 rounded-lg shadow-md w-full max-w-sm">
+            <div className="bg-cyan-600 p-6 rounded-lg shadow-md w-full max-w-sm">
                 <h1 className="text-xl font-semibold mb-4 text-center">Create an Account</h1>
 
                 <form onSubmit={handleRegister}>
@@ -75,8 +82,11 @@ const Register = () => {
                     </button>
                 </form>
                 {
-                    errorMessage && <p className="text-rose-500">{errorMessage}</p>
+                    errorMessage && <p className="text-red-700 font-semibold ">{errorMessage}</p>
 
+                }
+                {
+                    success && <p className="text-shadow-orange-600">Register Successfully</p>
                 }
                 <p className="text-sm text-center text-gray-600 mt-4">
                     Already have an account?{" "}
