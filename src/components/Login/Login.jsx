@@ -28,7 +28,13 @@ const Login = () => {
             .then(result => {
                 console.log(result.user);
                 // after successful status
-                setSuccess(true);
+                if (!result.user.emailVerified) {
+                    setLoginError('please verify your email')
+                }
+                else {
+                    setSuccess(true)
+                }
+                // setSuccess(true);
                 // login error message
                 setLoginError(error.message);
             })
