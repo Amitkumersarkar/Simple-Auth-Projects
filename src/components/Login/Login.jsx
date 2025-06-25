@@ -1,7 +1,7 @@
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { sendPasswordResetEmail, signInWithEmailAndPassword } from "firebase/auth";
 import { NavLink } from "react-router-dom";
 import auth from "../Firebase.init";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 const Login = () => {
     //declared state to success message
@@ -9,6 +9,7 @@ const Login = () => {
 
     //declared state for error message
     const [loginError, setLoginError] = useState('');
+    const emailRef = useRef();
     const handleLogin = (e) => {
         // stop reloading
         e.preventDefault();
@@ -43,6 +44,19 @@ const Login = () => {
             })
     }
 
+    const handleForgetPassword = () => {
+        console.log('get me email address', emailRef.current.value);
+        const email = emailRef.current.value;
+        if (!email) {
+            console.log('please provide me a valid email address');
+        }
+        else {
+            sendPasswordResetEmail(auth, email)
+                .then(() => {
+                    alert('password reset email sent, please check your email');
+                })
+        }
+    }
     return (
         <div className="hero bg-base-200 min-h-screen">
             <div className="flex flex-col items-center w-full max-w-md mx-auto space-y-6 px-4">
@@ -62,6 +76,7 @@ const Login = () => {
                                 <input
                                     type="email"
                                     id="email"
+                                    ref={emailRef}
                                     name="email"
                                     className="input input-bordered w-full"
                                     placeholder="Enter your email"
@@ -82,7 +97,7 @@ const Login = () => {
                             </div>
 
                             <div className="flex justify-between text-sm">
-                                <a href="#" className="link link-hover">Forgot password?</a>
+                                <a onClick={handleForgetPassword} href="#" className="link link-hover">Forgot password?</a>
                                 <NavLink to='/register'>
                                     <a href="#" className="link link-hover">Create an account</a>
                                 </NavLink>
